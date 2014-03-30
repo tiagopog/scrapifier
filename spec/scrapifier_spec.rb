@@ -42,25 +42,54 @@ describe String do
   # 
 
   describe '#check_img_ext' do
-    let(:image)       { images[:jpg].sample }
-    let(:some_images) { images.map { |i| i[1] }.flatten }
-
+    let(:img)  { images[:jpg].sample }
+    let(:imgs) { images.map { |i| i[1] }.flatten }
+    let(:checked) do
+      {
+        str:   ''.send(:check_img_ext, img),
+        array: ''.send(:check_img_ext, imgs), 
+        jpg:   ''.send(:check_img_ext, imgs, [:jpg, :jpeg]),
+        png:   ''.send(:check_img_ext, imgs, :png),
+        gif:   ''.send(:check_img_ext, imgs, 'gif')
+      }
+    end
+    
     context 'when no arument is passed' do
       it { expect { ''.send(:check_img_ext) }.to raise_error(ArgumentError) }
     end
 
     context 'when only the first argument is defined' do
       it 'allows a String as argument' do
-        
+        checked[:str].should have(1).item
       end
-      it 'allows a Array as argument'     
-      it 'allows all the image extensions by default'  
+      
+      it 'allows an Array as argument' do
+        checked[:jpg].should have(3).item
+      end
+      
+      it 'allows all the image extensions by default' do
+        checked[:array].should have(9).item
+      end
     end
 
     context 'when the two arguments are defined' do
-      it 'allows a String or Array as the first argument' 
-      it 'allows a Symbol, String or Array as the second argument' 
-      it 'returns an Array with only image types allowed'
+      it 'allows a Symbol as the second argument' do
+        checked[:png].should have(3).item
+      end
+
+      it 'allows a String as the second argument' do
+        checked[:gif].should have(3).item
+      end
+
+      it 'allows an Array as the second argument' do
+        checked[:jpg].should have(3).item
+      end
+      
+      it 'returns an Array with only image types allowed' do
+        checked[:jpg].should have(3).item
+        checked[:png].should have(3).item
+        checked[:gif].should have(3).item
+      end
     end
 
     context 'when no image is found/allowed' do
@@ -68,7 +97,9 @@ describe String do
       end
     end
 
-    it 'always returns an Array'
+    it 'always returns an Array' do
+      checked.each { |c| c[1].is_a?(Array).should be_true }
+    end
   end
 
 
@@ -191,7 +222,7 @@ describe String do
     it 'returns a Hash containing the page description'
     it 'returns a Hash containing the page URL'
     it 'returns a Hash containing the document type'
-    it %q{can return the "reply_to" email}
-    it %q{can return the page's author}
+    # it %q{can return the "reply_to" email}
+    # it %q{can return the page's author}
   end
 end

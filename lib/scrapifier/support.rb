@@ -39,7 +39,7 @@ module Scrapifier
       def sf_regex(type, *args)
         type = type.to_sym unless type.is_a? Symbol
         if type == :image
-          img_regex args
+          img_regex args.flatten
         else
           regexes = {
             url:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
@@ -61,11 +61,8 @@ module Scrapifier
       #     - Image extensions which will be included in the regex.
       
       def img_regex(exts = [])
-        if exts.nil? or exts.empty?
-          exts = %w(jpg jpeg png gif) 
-        elsif !exts.is_a? Array
-          exts = exts.to_s.split
-        end
+        exts = [exts].flatten       unless exts.is_a?(Array)
+        exts = %w(jpg jpeg png gif) if exts.nil? or exts.empty?
         eval "/(^http{1}[s]?:\\/\\/([w]{3}\\.)?.+\\.(#{exts.join('|')})(\\?.+)?$)/i"
       end      
   end
