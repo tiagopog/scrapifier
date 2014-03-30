@@ -7,56 +7,92 @@ describe String do
   let(:images) { urls[:images] }
 
   # 
-  # String#matched_url
+  # String#find_url
   # 
 
-  describe '#matched_url' do
-    let(:sample_urls) { urls[:misc] }
+  describe '#find_url' do
+    let(:sample_urls) { urls[:misc].map { |u| u[1] } }
     let(:str)         { "Awesome sites: #{sample_urls.join ' and '}" }
 
     it 'matches the first URL in the String by default' do
-      str.send(:matched_url).should eq(sample_urls[0])
+      str.send(:find_url).should eq(sample_urls[0])
     end
 
     it 'matches the second URL in the String (https)' do
-      str.send(:matched_url, 1).should eq(sample_urls[1])
+      str.send(:find_url, 1).should eq(sample_urls[1])
     end
 
     it 'matches the third URL in the String (www)' do
-      str.send(:matched_url, 2).should eq(sample_urls[2])
+      str.send(:find_url, 2).should eq(sample_urls[2])
     end
 
     context 'when no URL is matched' do
       it 'returns nil' do
-        'Lorem ipsum dolor.'.send(:matched_url).should be_nil
+        'Lorem ipsum dolor.'.send(:find_url).should be_nil
       end
 
       it 'returns nil (no presence of http|https|ftp|www)' do
-        'Check this out: google.com'.send(:matched_url).should be_nil
+        'Check this out: google.com'.send(:find_url).should be_nil
       end
     end 
   end
 
   # 
-  # String#check_ext
+  # String#check_img_ext
   # 
 
-  describe '#check_ext' do
-    #before(:all) { images.call }
+  describe '#check_img_ext' do
+    let(:image)       { images[:jpg].sample }
+    let(:some_images) { images.map { |i| i[1] }.flatten }
+
+    context 'when no arument is passed' do
+      it { expect { ''.send(:check_img_ext) }.to raise_error(ArgumentError) }
+    end
+
+    context 'when only the first argument is defined' do
+      it 'allows a String as argument' do
         
-    it 'allows one or two arguments'
+      end
+      it 'allows a Array as argument'     
+      it 'allows all the image extensions by default'  
+    end
 
-    it 'allows a String or Array as the first argument' 
+    context 'when the two arguments are defined' do
+      it 'allows a String or Array as the first argument' 
+      it 'allows a Symbol, String or Array as the second argument' 
+      it 'returns an Array with only image types allowed'
+    end
 
-    it 'allows a String, Symbol or Array as the second argument' 
-
-    it 'not allows any kind of String other than URLs (http|https|ftp)'
-
-    it 'allows all the extensions by default'
+    context 'when no image is found/allowed' do
+      it 'returns an empty Array' do
+      end
+    end
 
     it 'always returns an Array'
+  end
 
-    it 'returns an Array containing only the allowed extensions'
+
+  # 
+  # String#sf_regex
+  # 
+
+  describe '#sf_regex' do
+    context 'when it needs a regex to match any kind of URL' do
+      subject { ''.send(:sf_regex, :url) }
+
+      it { should match(urls[:misc][:http])  }
+      it { should match(urls[:misc][:https]) }
+      it { should match(urls[:misc][:ftp])   }
+      it { should match(urls[:misc][:www])   }
+    end
+
+    context 'when it needs a regex to match only image URLs' do
+      subject { ''.send(:sf_regex, :image) }
+
+      it { should match(urls[:images][:jpg].sample) }
+      it { should match(urls[:images][:png].sample) }
+      it { should match(urls[:images][:gif].sample) }
+    end    
   end
 
   # 
@@ -64,25 +100,68 @@ describe String do
   # 
 
   describe '#img_regex' do
-    let(:img_regexes) { urls[:img_regexes] }
+    let(:img_regexes) { urls[:regexes][:image] }
         
-    context 'when no extensions are defined in the arguments' do
+    context 'when no argument is passed' do
       subject(:regex) { ''.send(:img_regex) }
       
-      it 'returns a regex to match all image extensions' do
+      it 'returns a regex that matches all image extensions' do
         regex.should eq(img_regexes[:all])
       end
       
       it 'matches all image extensions' do
-        [:jpg, :png, :gif].each { |ext| images[ext][[*0..2].sample].should match(regex) }
+        [:jpg, :png, :gif].each { |ext| images[ext].sample.should match(regex) }
       end
     end
 
     context 'when only jpg|jpeg is allowed' do
       subject(:regex) { ''.send(:img_regex, [:jpg, :jpeg]) }
 
-      it 'returns a regex to match images with this extension' do
+      it 'returns a regex that matches only jpg|jpeg images' do
         regex.should eq(img_regexes[:jpg])
+      end
+
+      it 'matches only the defined extension' do
+        regex.should match(images[:jpg].sample)
+      end
+
+      it %q{doesn't match any other extension} do
+        regex.should_not match(images[:png].sample)
+        regex.should_not match(images[:gif].sample)
+      end
+    end
+
+    context 'when only png is allowed' do
+      subject(:regex) { ''.send(:img_regex, :png) }
+
+      it 'returns a regex that matches only png images' do
+        regex.should eq(img_regexes[:png])
+      end
+
+      it 'matches only the defined extension' do
+        regex.should match(images[:png].sample)
+      end
+
+      it %q{doesn't match any other extension} do
+        regex.should_not match(images[:jpg].sample)
+        regex.should_not match(images[:gif].sample)
+      end
+    end
+
+    context 'when only gif (argh!) is allowed' do
+      subject(:regex) { ''.send(:img_regex, :gif) }
+
+      it 'returns a regex that matches only gif images' do
+        regex.should eq(img_regexes[:gif])
+      end
+
+      it 'matches only the defined extension' do
+        regex.should match(images[:gif].sample)
+      end
+
+      it %q{doesn't match any other extension} do
+        regex.should_not match(images[:jpg].sample)
+        regex.should_not match(images[:png].sample)
       end
     end
   end

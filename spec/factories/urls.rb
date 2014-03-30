@@ -2,11 +2,12 @@ module Factories
   private
     def urls
       {
-        misc: [
-          'http://adtangerine.com',
-          'https://rubygems.org/gems/string_awesome',
-          'www.twitflink.com'
-        ],
+        misc: {
+          http:  'http://adtangerine.com',
+          https: 'https://rubygems.org/gems/string_awesome',
+          ftp:   'ftp://ftpserver.com',
+          www:   'www.twitflink.com'
+        },
         images: {
           jpg: [
             'http://www.foobar.com/image.jpg',
@@ -24,11 +25,15 @@ module Factories
             'https://bar.foobar.br/foo/var/stop_using.gif?foo=bar'
           ]
         },
-        img_regexes: {
-          all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg|png|gif)(\?.+)?$)/i,
-          jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg)(\?.+)?$)/i,
-          png: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(png)(\?.+)?$)/i,
-          gif: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(gif)(\?.+)?$)/i
+        regexes: {
+          image: {
+            all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg|png|gif)(\?.+)?$)/i,
+            jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg)(\?.+)?$)/i,
+            png: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(png)(\?.+)?$)/i,
+            gif: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(gif)(\?.+)?$)/i
+          },
+          url:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
+          protocol: /((ht|f)tp[s]?)/i
         }
       }
     end
