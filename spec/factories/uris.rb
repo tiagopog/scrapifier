@@ -1,6 +1,6 @@
 module Factories
   private
-    def urls
+    def uris
       {
         misc: {
           http:  'http://adtangerine.com',
@@ -10,29 +10,29 @@ module Factories
         },
         images: {
           jpg: [
-            'http://www.foobar.com/image.jpg',
+            'http://jlcauvin.com/wp-content/uploads/2013/09/heisenberg-breaking-bad.jpg',
             'https://www.foobar.com/awesome_image.jpg?foo=bar&bar=foo',
-            'http://foobar.com.br/nice-image.jpeg'
+            'http://foobar.com.br/nice-image.jpg'
           ],
           png: [
-            'http://www.foobar.com.br/nice-image.png',
+            'http://www.faniq.com/images/blog/58389e481aee9c5abbf49ff0a263f3ca.png',
             'https://foobar.br/awesome_image.png',
             'https://bar.foobar.br/foo/var/image.png?foo=bar',
           ],
           gif: [
-            'http://www.foobar.com/bad-image.gif',
+            'http://31.media.tumblr.com/6eec77e355fe50bae424291fd8c58622/tumblr_me7ucl8kO61rf089no1_500.gif',
             'http://foobar.com/ugly_image.gif',
             'https://bar.foobar.br/foo/var/stop_using.gif?foo=bar'
           ]
         },
         regexes: {
           image: {
-            all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg|png|gif)(\?.+)?$)/i,
-            jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg)(\?.+)?$)/i,
+            all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|png|gif)(\?.+)?$)/i,
+            jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg)(\?.+)?$)/i,
             png: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(png)(\?.+)?$)/i,
             gif: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(gif)(\?.+)?$)/i
           },
-          url:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
+          uri:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
           protocol: /((ht|f)tp[s]?)/i
         }
       }

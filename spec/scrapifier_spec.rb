@@ -3,36 +3,90 @@ require 'spec_helper'
 include Factories
 
 describe String do
-  # Sets a collection of image URLs to be used in the following tests
-  let(:images) { urls[:images] }
+  let(:images) { uris[:images] }
+  let(:misc)   { uris[:misc]   }
+  
+  # 
+  # String#scrapify
+  # 
+
+  describe '#scrapify' do
+    context 'when no URI is matched in the String' do
+      subject { 'String without any URI.'.scrapify }
+      
+      it { should eq({}) }
+    end
+
+    context 'when the website was not found' do
+      subject { 'Check out this http://someweirduri.com.br'.scrapify }
+      
+      it { should eq({}) }
+    end
+
+    context 'when an image URI is matched' do
+      let(:jpg) { images[:jpg][0] }
+      let(:png) { images[:png][0] }
+      let(:gif) { images[:gif][0] }
+      
+      it 'sets the same value for :title, :description and :uri keys' do
+        "Say my name: #{jpg}".scrapify.should include(title: jpg, description: jpg, uri: jpg)
+      end
+
+      it 'allows all the standard image extensions by default (even GIFs)' do
+        "Smile GIF! Oh, wait... #{gif}".scrapify.should include(title: gif, description: gif, uri: gif)
+      end
+      
+      it 'returns an empty Hash if the extension is not allowed' do
+        "PNG is awesome! #{png}".scrapify(images: [:jpg]).should eq({})
+      end
+    end
+
+    context 'when a website URI is matched' do
+      subject(:hash) { "Look this awesome site #{misc[:http]}".scrapify }
+      
+      it %q{returns a Hash containing the site's title} do
+        hash[:title].is_a?(String).should be_true
+        hash[:title].empty?.should be_false
+      end
+
+      it %q{returns a Hash containing the site's description} do
+        hash[:description].is_a?(String).should be_true
+        hash[:description].empty?.should be_false
+      end
+    end
+
+    it 'returns a Hash containing the page URI'
+    it "returns a Hash with a collection of images from the site's head/body"
+    it "returns a Hash with a collection of allowed images from the site's head/body"
+  end
 
   # 
-  # String#find_url
+  # String#find_uri
   # 
 
-  describe '#find_url' do
-    let(:sample_urls) { urls[:misc].map { |u| u[1] } }
-    let(:str)         { "Awesome sites: #{sample_urls.join ' and '}" }
+  describe '#find_uri' do
+    let(:sample_uris) { misc.map { |u| u[1] } }
+    let(:str)         { "Awesome sites: #{sample_uris.join ' and '}" }
 
-    it 'matches the first URL in the String by default' do
-      str.send(:find_url).should eq(sample_urls[0])
+    it 'matches the first URI in the String by default' do
+      str.send(:find_uri).should eq(sample_uris[0])
     end
 
-    it 'matches the second URL in the String (https)' do
-      str.send(:find_url, 1).should eq(sample_urls[1])
+    it 'matches the second URI in the String (https)' do
+      str.send(:find_uri, 1).should eq(sample_uris[1])
     end
 
-    it 'matches the third URL in the String (www)' do
-      str.send(:find_url, 2).should eq(sample_urls[2])
+    it 'matches the third URI in the String (www)' do
+      str.send(:find_uri, 2).should eq(sample_uris[2])
     end
 
-    context 'when no URL is matched' do
+    context 'when no URI is matched' do
       it 'returns nil' do
-        'Lorem ipsum dolor.'.send(:find_url).should be_nil
+        'Lorem ipsum dolor.'.send(:find_uri).should be_nil
       end
 
       it 'returns nil (no presence of http|https|ftp|www)' do
-        'Check this out: google.com'.send(:find_url).should be_nil
+        'Check this out: google.com'.send(:find_uri).should be_nil
       end
     end 
   end
@@ -48,7 +102,7 @@ describe String do
       {
         str:   ''.send(:check_img_ext, img),
         array: ''.send(:check_img_ext, imgs), 
-        jpg:   ''.send(:check_img_ext, imgs, [:jpg, :jpeg]),
+        jpg:   ''.send(:check_img_ext, imgs, [:jpg]),
         png:   ''.send(:check_img_ext, imgs, :png),
         gif:   ''.send(:check_img_ext, imgs, 'gif')
       }
@@ -86,9 +140,7 @@ describe String do
       end
       
       it 'returns an Array with only image types allowed' do
-        checked[:jpg].should have(3).item
-        checked[:png].should have(3).item
-        checked[:gif].should have(3).item
+        [:jpg, :png, :gif].each { |ext| checked[ext].should have(3).item }
       end
     end
 
@@ -108,21 +160,20 @@ describe String do
   # 
 
   describe '#sf_regex' do
-    context 'when it needs a regex to match any kind of URL' do
-      subject { ''.send(:sf_regex, :url) }
+    context 'when it needs a regex to match any kind of URI' do
+      subject { ''.send(:sf_regex, :uri) }
 
-      it { should match(urls[:misc][:http])  }
-      it { should match(urls[:misc][:https]) }
-      it { should match(urls[:misc][:ftp])   }
-      it { should match(urls[:misc][:www])   }
+      [:http, :https, :ftp, :www].each do |p| 
+        it { should match(misc[:http]) }
+      end
     end
 
-    context 'when it needs a regex to match only image URLs' do
+    context 'when it needs a regex to match only image uris' do
       subject { ''.send(:sf_regex, :image) }
 
-      it { should match(urls[:images][:jpg].sample) }
-      it { should match(urls[:images][:png].sample) }
-      it { should match(urls[:images][:gif].sample) }
+      [:jpg, :png, :gif].each do |ext|
+        it { should match(uris[:images][ext].sample) }  
+      end
     end    
   end
 
@@ -131,7 +182,7 @@ describe String do
   # 
 
   describe '#img_regex' do
-    let(:img_regexes) { urls[:regexes][:image] }
+    let(:img_regexes) { uris[:regexes][:image] }
         
     context 'when no argument is passed' do
       subject(:regex) { ''.send(:img_regex) }
@@ -145,10 +196,10 @@ describe String do
       end
     end
 
-    context 'when only jpg|jpeg is allowed' do
-      subject(:regex) { ''.send(:img_regex, [:jpg, :jpeg]) }
+    context 'when only jpg is allowed' do
+      subject(:regex) { ''.send(:img_regex, [:jpg]) }
 
-      it 'returns a regex that matches only jpg|jpeg images' do
+      it 'returns a regex that matches only jpg images' do
         regex.should eq(img_regexes[:jpg])
       end
 
@@ -157,8 +208,7 @@ describe String do
       end
 
       it %q{doesn't match any other extension} do
-        regex.should_not match(images[:png].sample)
-        regex.should_not match(images[:gif].sample)
+        [:png, :gif].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
 
@@ -174,8 +224,7 @@ describe String do
       end
 
       it %q{doesn't match any other extension} do
-        regex.should_not match(images[:jpg].sample)
-        regex.should_not match(images[:gif].sample)
+        [:jpg, :gif].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
 
@@ -191,38 +240,8 @@ describe String do
       end
 
       it %q{doesn't match any other extension} do
-        regex.should_not match(images[:jpg].sample)
-        regex.should_not match(images[:png].sample)
+        [:jpg, :png].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
-  end
-
-  # 
-  # String#scrapify
-  # 
-
-  describe '#scrapify' do
-    it %q{returns an empty Hash in case the String doesn't have any URL} do
-      'String without any URL.'.scrapify.should eq({})
-    end
-
-    it %q{returns an empty Hash in case the URL doesn't match to any website} do
-      'Check out this http://someweirdurl.com.br'.scrapify.should eq({})
-    end
-
-    it %q{returns the same URL in the :title, :description and :url keys when it's requesting an image} do
-      url = 'http://jlcauvin.com/wp-content/uploads/2013/09/heisenberg-breaking-bad.jpg'
-      "Say my name: #{url}".scrapify.should include(title: url, description: url, url: url)
-    end
-
-    it 'returns only the the allowed extensions when the URL is requesting an image' do      
-    end
-
-    it 'returns a Hash containing the page title'
-    it 'returns a Hash containing the page description'
-    it 'returns a Hash containing the page URL'
-    it 'returns a Hash containing the document type'
-    # it %q{can return the "reply_to" email}
-    # it %q{can return the page's author}
   end
 end

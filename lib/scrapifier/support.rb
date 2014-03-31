@@ -23,13 +23,13 @@ module Scrapifier
         images.select { |i| i =~ sf_regex(:image, allowed) }
       end
 
-      # Selects regexes for URLs, protocols and image extensions.
+      # Selects regexes for URIs, protocols and image extensions.
       # 
       # Example:
-      #   >> sf_regex(:url)
+      #   >> sf_regex(:uri)
       #   => /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
       #   >> sf_regex(:image, :jpg)
-      #   => /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg)(\?.+)?$)/i
+      #   => /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg)(\?.+)?$)/i
       # Arguments:
       #   type: (Symbol or String)
       #     - Regex type.
@@ -42,7 +42,7 @@ module Scrapifier
           img_regex args.flatten
         else
           regexes = {
-            url:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
+            uri:      /\b((((ht|f)tp[s]?:\/\/)|([a-z0-9]+\.))+(?<!@)([a-z0-9\_\-]+)(\.[a-z]+)+([\?\/\:][a-z0-9_=%&@\?\.\/\-\:\#\(\)]+)?\/?)/i,
             protocol: /((ht|f)tp[s]?)/i
           }
           regexes[type]
@@ -53,7 +53,7 @@ module Scrapifier
       # 
       # Example:
       #   >> img_regex
-      #   => /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg|png|gif)(\?.+)?$)/i
+      #   => /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|png|gif)(\?.+)?$)/i
       #   >> img_regex([:jpg, :png])
       #   => /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|png)(\?.+)?$)/i
       # Arguments:
@@ -62,8 +62,16 @@ module Scrapifier
       
       def img_regex(exts = [])
         exts = [exts].flatten       unless exts.is_a?(Array)
-        exts = %w(jpg jpeg png gif) if exts.nil? or exts.empty?
+        exts = %w(jpg png gif) if exts.nil? or exts.empty?
         eval "/(^http{1}[s]?:\\/\\/([w]{3}\\.)?.+\\.(#{exts.join('|')})(\\?.+)?$)/i"
-      end      
+      end
+
+      def sf_paths
+        {
+          title:       '//meta[@property = "og:title"]/@content | //meta[@name = "title"]/@content | //meta[@name = "Title"]/@content | //title | //h1',
+          description: '//meta[@property = "og:description"]/@content | //meta[@name = "description"]/@content | //meta[@name = "Description"]/@content | //h1 | //h3 | //p | //span | //font',
+          image:       '//meta[@property = "og:image"]/@content | //link[@rel = "image_src"]/@href | //meta[@itemprop = "image"]/@content | //div[@id = "logo"]/img/@src | //a[@id = "logo"]/img/@src | //div[@class = "logo"]/img/@src | //a[@class = "logo"]/img/@src | //a//img[@width]/@src | //img[@width]/@src | //a//img[@height]/@src | //img[@height]/@src | //a//img/@src | //span//img/@src' 
+        }
+      end
   end
 end
