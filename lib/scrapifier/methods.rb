@@ -14,7 +14,7 @@ module Scrapifier
         if uri.nil?
           raise  
         elsif uri =~ sf_regex(:image)
-          uri = (check_img_ext(uri, (options[:images] || []))[0] rescue [])
+          uri = (sf_check_img_ext(uri, options[:images])[0] rescue [])
           raise if uri.empty?
           [:title, :description, :uri, :images].each { |key| meta[key] = uri }
         else
@@ -22,11 +22,11 @@ module Scrapifier
           doc.encoding = 'utf-8'
           
           [:title, :description].each do |key| 
-            meta[key] = (doc.xpath(paths[key])[0].text rescue '-')
+            meta[key] = (doc.xpath(sf_paths[key])[0].text rescue '-')
           end
 
-          # meta[:images] = doc.xpath(paths[:image])
-          # meta[:uri]    = url
+          meta[:images] = sf_fix_imgs(doc.xpath(sf_paths[:image]), uri, options[:images])
+          meta[:uri]    = uri
         end
       rescue 
         meta = {}

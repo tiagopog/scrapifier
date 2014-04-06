@@ -1,6 +1,6 @@
 module Factories
   private
-    def uris
+    def sf_samples
       {
         misc: {
           http:  'http://adtangerine.com',
@@ -11,7 +11,7 @@ module Factories
         images: {
           jpg: [
             'http://jlcauvin.com/wp-content/uploads/2013/09/heisenberg-breaking-bad.jpg',
-            'https://www.foobar.com/awesome_image.jpg?foo=bar&bar=foo',
+            'https://www.foobar.com/awesome_image.jpeg?foo=bar&bar=foo',
             'http://foobar.com.br/nice-image.jpg'
           ],
           png: [
@@ -27,8 +27,8 @@ module Factories
         },
         regexes: {
           image: {
-            all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|png|gif)(\?.+)?$)/i,
-            jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg)(\?.+)?$)/i,
+            all: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg|png|gif)(\?.+)?$)/i,
+            jpg: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(jpg|jpeg)(\?.+)?$)/i,
             png: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(png)(\?.+)?$)/i,
             gif: /(^http{1}[s]?:\/\/([w]{3}\.)?.+\.(gif)(\?.+)?$)/i
           },

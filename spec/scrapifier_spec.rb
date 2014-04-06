@@ -3,8 +3,9 @@ require 'spec_helper'
 include Factories
 
 describe String do
-  let(:images) { uris[:images] }
-  let(:misc)   { uris[:misc]   }
+  let(:images)  { sf_samples[:images] }
+  let(:misc)    { sf_samples[:misc]   }
+  let(:regexes) { sf_samples[:regexes] }
   
   # 
   # String#scrapify
@@ -53,10 +54,20 @@ describe String do
         hash[:description].is_a?(String).should be_true
         hash[:description].empty?.should be_false
       end
-    end
 
-    it 'returns a Hash containing the page URI'
-    it "returns a Hash with a collection of images from the site's head/body"
+      it 'returns a Hash containing the page URI' do
+        hash[:uri].is_a?(String).should be_true
+        hash[:uri].empty?.should be_false
+        hash[:uri].should eq(misc[:http])
+      end
+
+      it "returns a Hash with a collection of images from the site's head/body" do
+        p hash[:images]
+        hash[:images].is_a?(Array).should be_true
+        hash[:images].sample.should match(regexes[:image][:all])
+      end
+    end
+    
     it "returns a Hash with a collection of allowed images from the site's head/body"
   end
 
@@ -92,24 +103,24 @@ describe String do
   end
 
   # 
-  # String#check_img_ext
+  # String#sf_check_img_ext
   # 
 
-  describe '#check_img_ext' do
+  describe '#sf_check_img_ext' do
     let(:img)  { images[:jpg].sample }
     let(:imgs) { images.map { |i| i[1] }.flatten }
     let(:checked) do
       {
-        str:   ''.send(:check_img_ext, img),
-        array: ''.send(:check_img_ext, imgs), 
-        jpg:   ''.send(:check_img_ext, imgs, [:jpg]),
-        png:   ''.send(:check_img_ext, imgs, :png),
-        gif:   ''.send(:check_img_ext, imgs, 'gif')
+        str:   ''.send(:sf_check_img_ext, img),
+        array: ''.send(:sf_check_img_ext, imgs), 
+        jpg:   ''.send(:sf_check_img_ext, imgs, [:jpg]),
+        png:   ''.send(:sf_check_img_ext, imgs, :png),
+        gif:   ''.send(:sf_check_img_ext, imgs, 'gif')
       }
     end
     
     context 'when no arument is passed' do
-      it { expect { ''.send(:check_img_ext) }.to raise_error(ArgumentError) }
+      it { expect { ''.send(:sf_check_img_ext) }.to raise_error(ArgumentError) }
     end
 
     context 'when only the first argument is defined' do
@@ -172,20 +183,20 @@ describe String do
       subject { ''.send(:sf_regex, :image) }
 
       [:jpg, :png, :gif].each do |ext|
-        it { should match(uris[:images][ext].sample) }  
+        it { should match(sf_samples[:images][ext].sample) }  
       end
     end    
   end
 
   # 
-  # String#img_regex
+  # String#sf_img_regex
   # 
 
-  describe '#img_regex' do
-    let(:img_regexes) { uris[:regexes][:image] }
+  describe '#sf_img_regex' do
+    let(:img_regexes) { regexes[:image] }
         
     context 'when no argument is passed' do
-      subject(:regex) { ''.send(:img_regex) }
+      subject(:regex) { ''.send(:sf_img_regex) }
       
       it 'returns a regex that matches all image extensions' do
         regex.should eq(img_regexes[:all])
@@ -197,7 +208,7 @@ describe String do
     end
 
     context 'when only jpg is allowed' do
-      subject(:regex) { ''.send(:img_regex, [:jpg]) }
+      subject(:regex) { ''.send(:sf_img_regex, [:jpg]) }
 
       it 'returns a regex that matches only jpg images' do
         regex.should eq(img_regexes[:jpg])
@@ -213,7 +224,7 @@ describe String do
     end
 
     context 'when only png is allowed' do
-      subject(:regex) { ''.send(:img_regex, :png) }
+      subject(:regex) { ''.send(:sf_img_regex, :png) }
 
       it 'returns a regex that matches only png images' do
         regex.should eq(img_regexes[:png])
@@ -229,7 +240,7 @@ describe String do
     end
 
     context 'when only gif (argh!) is allowed' do
-      subject(:regex) { ''.send(:img_regex, :gif) }
+      subject(:regex) { ''.send(:sf_img_regex, :gif) }
 
       it 'returns a regex that matches only gif images' do
         regex.should eq(img_regexes[:gif])
