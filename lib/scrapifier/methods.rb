@@ -48,7 +48,8 @@ module Scrapifier
     
     def find_uri(which = 0)
       which ||= which.to_i
-      self.scan(sf_regex(:uri))[which][0] rescue nil
+      which = self.scan(sf_regex(:uri))[which][0] rescue nil
+      (which.nil? or which =~ sf_regex(:protocol)) ? which : 'http://' << which
     end
   end
 end

@@ -42,33 +42,44 @@ describe String do
       end
     end
 
-    context 'when a website URI is matched' do
+    context 'when a website URI is matched in the String and a Hash is returned' do
       subject(:hash) { "Look this awesome site #{misc[:http]}".scrapify }
       
-      it %q{returns a Hash containing the site's title} do
+      it "includes a field with the site's title" do
         hash[:title].is_a?(String).should be_true
         hash[:title].empty?.should be_false
       end
 
-      it %q{returns a Hash containing the site's description} do
+      it "includes a field with the site's description" do
         hash[:description].is_a?(String).should be_true
         hash[:description].empty?.should be_false
       end
 
-      it 'returns a Hash containing the page URI' do
+      it 'includes a field with the page URI' do
         hash[:uri].is_a?(String).should be_true
         hash[:uri].empty?.should be_false
         hash[:uri].should eq(misc[:http])
       end
 
-      it "returns a Hash with a collection of images from the site's head/body" do
-        p hash[:images]
+      it "includes a field with image URIs from the site's head/body" do
         hash[:images].is_a?(Array).should be_true
         hash[:images].sample.should match(regexes[:image][:all])
       end
     end
     
-    it "returns a Hash with a collection of allowed images from the site's head/body"
+    it "includes a field with only the allowed types of image URIs from the site's head/body" do
+      misc[:http].scrapify(images: :png)[:images].sample.should match(regexes[:image][:png])
+    end
+
+    it "can choose the URI in the String to be scrapified" do
+      hash = "Check out these awesome sites: #{misc[:http]} and #{misc[:www]}".scrapify(which: 1, images: :png)
+      [:title, :description, :uri].each do |key|
+        hash[key].is_a?(String).should be_true
+        hash[key].empty?.should be_false
+      end
+      hash[:uri].should eq("http://#{misc[:www]}")
+      hash[:images].sample.should match(regexes[:image][:png])
+    end
   end
 
   # 
@@ -218,7 +229,7 @@ describe String do
         regex.should match(images[:jpg].sample)
       end
 
-      it %q{doesn't match any other extension} do
+      it "doesn't match any other extension" do
         [:png, :gif].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
@@ -234,7 +245,7 @@ describe String do
         regex.should match(images[:png].sample)
       end
 
-      it %q{doesn't match any other extension} do
+      it "doesn't match any other extension" do
         [:jpg, :gif].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
@@ -250,7 +261,7 @@ describe String do
         regex.should match(images[:gif].sample)
       end
 
-      it %q{doesn't match any other extension} do
+      it "doesn't match any other extension" do
         [:jpg, :png].each { |ext| regex.should_not match(images[ext].sample) }
       end
     end
