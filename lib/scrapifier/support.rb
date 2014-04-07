@@ -86,6 +86,19 @@ module Scrapifier
         }
       end
 
+      # Checks and returns only the valid image URIs.
+      # 
+      # Example:
+      #   >>  sf_fix_imgs(['http://adtangerine.com/image.png', '/assets/image.jpg'], 'http://adtangerine.com', :jpg)
+      #   => ['http://adtangerine/assets/image.jpg']
+      # Arguments:
+      #   imgs: (Array)
+      #     - Image URIs got from the HTML doc.
+      #   uri: (String)
+      #     - Used as basis to the URIs that don't have any protocol/domain set. 
+      #   exts: (Symbol or Array)
+      #     -  Allowed image extesntions.
+
       def sf_fix_imgs(imgs, uri, exts = [])
         sf_check_img_ext(imgs.map do |img|
           img = img.to_s 
@@ -94,14 +107,36 @@ module Scrapifier
         end.compact, exts)
       end
 
-      def sf_fix_protocol(str, domain)
-        if str =~ /^\/\/[^\/]+/
-          'http:' << str
+      # Fixes image URIs that doesn't present protocol/domain.
+      # 
+      # Example:
+      #   >> sf_fix_protocol('/assets/image.jpg', 'http://adtangerine.com')
+      #   => 'http://adtangerine/assets/image.jpg'
+      #   >> sf_fix_protocol('//s.ytimg.com/yts/img/youtub_img.png', 'https://youtube.com')
+      #   => 'https://s.ytimg.com/yts/img/youtub_img.png'
+      # Arguments:
+      #   path: (String)
+      #     - URI path having no protocol/domain set.
+      #   domain: (String)
+      #     - Domain that will be prepended into the path.
+
+      def sf_fix_protocol(path, domain)
+        if path =~ /^\/\/[^\/]+/
+          'http:' << path
         else
-          "http://#{domain}#{'/' if str =~ /^\/[^\/]+/}#{str}" 
+           "http://#{domain}#{'/' unless path =~ /^\/[^\/]+/}#{path}" 
         end    
       end
 
+      # Returns the domain from an URI
+      # 
+      # Example:
+      #   >> sf_domain('http://adtangerine.com')
+      #   => 'adtangerine.com'
+      # Arguments:
+      #   uri: (String)
+      #     - URI.
+      
       def sf_domain(uri)
         (uri.split('/')[2] rescue '')
       end

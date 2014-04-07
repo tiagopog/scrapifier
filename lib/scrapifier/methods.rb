@@ -7,6 +7,21 @@ module Scrapifier
   module Methods
     include Scrapifier::Support
 
+    # Gets meta data from an URI using the screen scraping technique.
+    # 
+    # Example:
+    #   >> 'Wow! What an awesome site: http://adtangerine.com!'.scrapify
+    #   => {
+    #        :title => "AdTangerine | Advertising Platform for Social Media",
+    #        :description => "AdTangerine is an advertising platform that uses the tangerine as a virtual currency...",
+    #        :images => ["http://adtangerine.com/assets/logo_adt_og.png", "http://adtangerine.com/assets/logo_adt_og.png],
+    #        :uri => "http://adtangerine.com"
+    #      }
+    # Arguments:
+    #   options: (Hash)
+    #     - which: (Integer) Indicates which URI in the String will be used. It starts from 0 to N.
+    #     - images: (Symbol or Array) Indicates the image extensions which are allowed to be returned as result.
+
     def scrapify(options = {})
       meta, uri = {}, find_uri(options[:which])
       

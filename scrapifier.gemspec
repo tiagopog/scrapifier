@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Scrapifier::VERSION
   spec.authors       = ['Tiago Guedes']
   spec.email         = ['tiagopog@gmail.com']
-  spec.description   = %q{A very simple way to extract meta information from URIs using the screen scraping technique.}
-  spec.summary       = %q{Extends the Ruby String class with a screen scraping method.}
+  spec.description   = 'A very simple way to extract meta information from URIs using the screen scraping technique.'
+  spec.summary       = 'Extends the Ruby String class with a screen scraping method.'
   spec.homepage      = 'https://github.com/tiagopog/scrapifier'
   spec.license       = 'MIT'
 
