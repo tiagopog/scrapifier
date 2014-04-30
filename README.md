@@ -7,7 +7,7 @@
 
 It's a Ruby gem that brings a very simple way to extract meta information from URIs using the screen scraping technique.
 
-Notice: This documentation is using the "URI" acronym rather than "URL", because this gem also matches URIs that don't have a explicit locator (e.g. www.google.com). See more in: http://www.danielmiessler.com/study/url_vs_uri
+''Notice: this is using the "URI" acronym rather than "URL", because this gem also matches URIs that don't have an explicit locator (e.g. www.google.com). See more in: http://www.danielmiessler.com/study/url_vs_uri''
 
 ## Installation
 
