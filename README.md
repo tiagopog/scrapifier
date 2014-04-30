@@ -42,7 +42,7 @@ The String#scrapify method finds an URI in the String and gets its metadata, e.g
 #### Allow only certain image types.
 
 ``` ruby
-'Wow! What an awesome site: http://adtangerine.com!'.scrapify images: :jpg
+'Wow! What an awesome site: http://adtangerine.com!'.scrapify(images: :jpg)
 #=> {
 #   title:       "AdTangerine | Advertising Platform for Social Media",
 #   description: "AdTangerine is an advertising platform that uses the tangerine as a virtual currency for advertisers and publishers in order to share content on social networks.",
@@ -50,7 +50,7 @@ The String#scrapify method finds an URI in the String and gets its metadata, e.g
 #   uri:         "http://adtangerine.com"
 # }
 
-'Wow! What an awesome site: http://adtangerine.com!'.scrapify images: [:png, :gif]
+'Wow! What an awesome site: http://adtangerine.com!'.scrapify(images: [:png, :gif])
 #=> {
 #   title:       "AdTangerine | Advertising Platform for Social Media",
 #   description: "AdTangerine is an advertising platform that uses the tangerine as a virtual currency for advertisers and publishers in order to share content on social networks.",
@@ -62,7 +62,7 @@ The String#scrapify method finds an URI in the String and gets its metadata, e.g
 #### Choose which URI you want it to be scraped.
 
 ``` ruby
-'Check out: http://adtangerine.com and www.twitflink.com'.scrapify which: 1
+'Check out: http://adtangerine.com and www.twitflink.com'.scrapify(which: 1)
 #=> {
 #   title:       "TwitFlink | Find a link!",
 #   description: "TwitFlink is a very simple searching tool that allows people to find out links tweeted by any user from Twitter.",
@@ -70,7 +70,7 @@ The String#scrapify method finds an URI in the String and gets its metadata, e.g
 #   uri:         "http://www.twitflink.com"
 # }
 
-'Check out: http://adtangerine.com and www.twitflink.com'.scrapify({ which: 0, images: :gif })
+'Check out: http://adtangerine.com and www.twitflink.com'.scrapify(which: 0, images: :gif)
 #=> {
 #   title:       "AdTangerine | Advertising Platform for Social Media",
 #   description: "AdTangerine is an advertising platform that uses the tangerine as a virtual currency for advertisers and publishers in order to share content on social networks.",
