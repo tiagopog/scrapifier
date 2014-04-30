@@ -25,7 +25,7 @@ Or install it yourself as:
 
 ## Usage
 
-The method finds an URI in the String and gets some meta information from it, like the page's title, description, images and the URI. All the data is returned in a well-formatted Hash.
+The String#scrapify method finds an URI in the String and gets its metadata, e.g., the page's title, description, images and the URI itself. All the data is returned in a well-formatted Hash.
 
 #### Default usage.
 
