@@ -1,6 +1,13 @@
 # Scrapifier
 
+[![Build Status](https://travis-ci.org/tiagopog/scrapifier.svg?branch=master)](https://travis-ci.org/tiagopog/scrapifier)
+[![Code Climate](https://codeclimate.com/github/tiagopog/scrapifier.png)](https://codeclimate.com/github/tiagopog/scrapifier)
+[![Dependency Status](https://gemnasium.com/tiagopog/scrapifier.svg)](https://gemnasium.com/tiagopog/scrapifier)
+[![Gem Version](https://badge.fury.io/rb/scrapifier.svg)](http://badge.fury.io/rb/scrapifier)
+
 It's a Ruby gem that brings a very simple way to extract meta information from URIs using the screen scraping technique.
+
+Notice: This documentation is using the "URI" acronym rather than "URL", because this gem also matches URIs that don't have a explicit locator (e.g. www.google.com). See more in: http://www.danielmiessler.com/study/url_vs_uri
 
 ## Installation
 
