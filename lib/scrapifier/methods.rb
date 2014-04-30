@@ -34,7 +34,7 @@ module Scrapifier
       if !(uri =~ sf_regex(:image))
         meta = sf_eval_uri(uri, options[:images])
       elsif !sf_check_img_ext(uri, options[:images]).empty?
-        %i(title description uri images).each { |k| meta[k] = uri }
+        [:title, :description, :uri, :images].each { |k| meta[k] = uri }
       end
 
       meta
