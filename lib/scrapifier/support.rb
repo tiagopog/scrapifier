@@ -24,7 +24,7 @@ module Scrapifier
       doc = Nokogiri::HTML(open(uri).read)
       doc.encoding, meta = 'utf-8', { uri: uri }
 
-      %i(title description).each { |k| meta[k] = (doc.xpath(sf_paths[k])[0].text rescue '-') }
+      [:title, :description].each { |k| meta[k] = (doc.xpath(sf_paths[k])[0].text rescue '-') }
       meta[:images] = sf_fix_imgs(doc.xpath(sf_paths[:image]), uri, imgs)
 
       meta
