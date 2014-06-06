@@ -7,6 +7,8 @@
 
 It's a Ruby gem that brings a very simple way to extract meta information from URIs using the screen scraping technique.
 
+Note: This gem is mainly focused on screen scraping URLs (presence of protocol, such as: "http", "https" and "ftp"), but it also works with URIs which have the "www" without any protocol defined, like: "www.google.com".
+
 ## Installation
 
 Compatible with Ruby 1.9.3+
@@ -30,8 +32,6 @@ An then require the gem:
 ## Usage
 
 The String#scrapify method finds URIs in a string and then gets their metadata, e.g., the page's title, description, images and URI. All the data is returned in a well-formatted hash.
-
-Note: This gem is mainly focused on screen scraping URLs (presence of protocol, such as: "http", "https" and "ftp"), but it also works with URIs which have the "www" without any protocol defined, like: "www.google.com". 
 
 #### Default usage.
 
