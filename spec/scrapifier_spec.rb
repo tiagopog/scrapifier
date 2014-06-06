@@ -46,24 +46,24 @@ describe String do
       subject(:hash) { "Look this awesome site #{misc[:http]}".scrapify }
       
       it "includes a field with the site's title" do
-        hash[:title].is_a?(String).should be_true
-        hash[:title].empty?.should be_false
+        hash[:title].is_a?(String).should be true
+        hash[:title].empty?.should be false
       end
 
       it "includes a field with the site's description" do
-        hash[:description].is_a?(String).should be_true
-        hash[:description].empty?.should be_false
+        hash[:description].is_a?(String).should be true
+        hash[:description].empty?.should be false
       end
 
       it 'includes a field with the page URI' do
-        hash[:uri].is_a?(String).should be_true
-        hash[:uri].empty?.should be_false
+        hash[:uri].is_a?(String).should be true
+        hash[:uri].empty?.should be false
         hash[:uri].should eq(misc[:http])
       end
 
       it "includes a field with image URIs from the site's head/body" do
         unless hash[:images].empty?
-          hash[:images].is_a?(Array).should be_true
+          hash[:images].is_a?(Array).should be true
           hash[:images].sample.should match(regexes[:image][:all])
         end
       end
@@ -77,8 +77,8 @@ describe String do
     it "can choose the URI in the String to be scrapified" do
       hash = "Check out these awesome sites: #{misc[:http]} and #{misc[:www]}".scrapify(which: 1, images: :png)
       [:title, :description, :uri].each do |key|
-        hash[key].is_a?(String).should be_true
-        hash[key].empty?.should be_false
+        hash[key].is_a?(String).should be true
+        hash[key].empty?.should be false
       end
       hash[:uri].should eq("http://#{misc[:www]}")
       hash[:images].sample.should match(regexes[:image][:png])
@@ -175,7 +175,7 @@ describe String do
     end
 
     it 'always returns an Array' do
-      checked.each { |c| c[1].is_a?(Array).should be_true }
+      checked.each { |c| c[1].is_a?(Array).should be true }
     end
   end
 
