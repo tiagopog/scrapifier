@@ -62,13 +62,16 @@ describe String do
       end
 
       it "includes a field with image URIs from the site's head/body" do
-        hash[:images].is_a?(Array).should be_true
-        hash[:images].sample.should match(regexes[:image][:all])
+        unless hash[:images].empty?
+          hash[:images].is_a?(Array).should be_true
+          hash[:images].sample.should match(regexes[:image][:all])
+        end
       end
     end
     
     it "includes a field with only the allowed types of image URIs from the site's head/body" do
-      misc[:http].scrapify(images: :png)[:images].sample.should match(regexes[:image][:png])
+      image = misc[:http].scrapify(images: :png)[:images].sample
+      image.should match(regexes[:image][:png]) unless image.nil?
     end
 
     it "can choose the URI in the String to be scrapified" do

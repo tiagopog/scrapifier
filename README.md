@@ -23,9 +23,15 @@ Or install it yourself as:
 
     $ gem install scrapifier
 
+An then require the gem:
+
+    $ require 'scrapifier'
+
 ## Usage
 
-The String#scrapify method finds an URI in the String and gets its metadata, e.g., the page's title, description, images and the URI itself. All the data is returned in a well-formatted Hash.
+The String#scrapify method finds URIs in a string and then gets their metadata, e.g., the page's title, description, images and URI. All the data is returned in a well-formatted hash.
+
+Note: This gem is mainly focused on screen scraping URLs (presence of protocol, such as: "http", "https" and "ftp"), but it also works with URIs which have the "www" without any protocol defined, like: "www.google.com". 
 
 #### Default usage.
 
