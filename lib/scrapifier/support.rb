@@ -116,14 +116,14 @@ module Scrapifier
 
     # Organize XPaths.
     def sf_xpaths
-      { title: sf_title_xpath,
-        description: sf_desc_xpath,
-        keywords: sf_keywords_xpath,
-        lang: sf_lang_xpath,
-        encode: sf_encode_xpath,
-        reply_to: sf_reply_to_xpath,
-        author: sf_author_xpath,
-        image: sf_img_xpath }
+      { title: XPath::TITLE,
+        description: XPath::DESC,
+        keywords: XPath::KEYWORDS,
+        lang: XPath::LANG,
+        encode: XPath::ENCODE,
+        reply_to: XPath::REPLY_TO,
+        author: XPath::AUTHOR,
+        image: XPath::IMG }
     end
 
     # Check and return only the valid image URIs.
