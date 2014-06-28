@@ -1,6 +1,9 @@
+require 'scrapifier/xpath'
+
 module Scrapifier
   # Support methods to get, check and organize data.
   module Support
+    include XPath
     module_function
 
     # Evaluate the URI's HTML document and get its metadata.
@@ -25,7 +28,7 @@ module Scrapifier
       doc = Nokogiri::HTML(open(uri).read)
       doc.encoding, meta = 'utf-8', { uri: uri }
 
-      [:title, :description].each do |k|
+      [:title, :description, :keywords, :lang, :encode, :reply_to, :author].each do |k|
         node = doc.xpath(sf_xpaths[k])[0]
         meta[k] = node.nil? ? '-' : node.text
       end
@@ -111,45 +114,16 @@ module Scrapifier
       %r{(^http{1}[s]?://([w]{3}\.)?.+\.(#{exts.join('|')})(\?.+)?$)}i
     end
 
-    # Collection of xpath that are used to get nodes
-    # from the parsed HTML.
+    # Organize XPaths.
     def sf_xpaths
-      {
-        title: sf_title_xpath,
+      { title: sf_title_xpath,
         description: sf_desc_xpath,
-        image: sf_img_xpath
-      }
-    end
-
-    def sf_title_xpath
-      <<-END.gsub(/^\s+\|/, '')
-        |//meta[@property = "og:title"]/@content|
-        |//meta[@name = "title"]/@content|
-        |//meta[@name = "Title"]/@content|
-        |//title|//h1
-      END
-    end
-
-    def sf_desc_xpath
-      <<-END.gsub(/^\s+\|/, '')
-        |//meta[@property = "og:description"]/@content|
-        |//meta[@name = "description"]/@content|
-        |//meta[@name = "Description"]/@content|
-        |//h1|//h3|//p|//span|//font
-      END
-    end
-
-    def sf_img_xpath
-      <<-END.gsub(/^\s+\|/, '')
-        |//meta[@property = "og:image"]/@content|
-        |//link[@rel = "image_src"]/@href|
-        |//meta[@itemprop = "image"]/@content|
-        |//div[@id = "logo"]/img/@src|//a[@id = "logo"]/img/@src|
-        |//div[@class = "logo"]/img/@src|//a[@class = "logo"]/img/@src|
-        |//a//img[@width]/@src|//img[@width]/@src|
-        |//a//img[@height]/@src|//img[@height]/@src|
-        |//a//img/@src|//span//img/@src|//img/@src
-      END
+        keywords: sf_keywords_xpath,
+        lang: sf_lang_xpath,
+        encode: sf_encode_xpath,
+        reply_to: sf_reply_to_xpath,
+        author: sf_author_xpath,
+        image: sf_img_xpath }
     end
 
     # Check and return only the valid image URIs.

@@ -6,7 +6,7 @@ require 'scrapifier/support'
 module Scrapifier
   # Methods which will be included into the String class.
   module Methods
-    include Scrapifier::Support
+    include Support
 
     # Get metadata from an URI using the screen scraping technique.
     #

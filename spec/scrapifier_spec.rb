@@ -61,6 +61,26 @@ describe String do
         hash[:uri].should eq(misc[:http])
       end
 
+      it "includes a field with the site's keywords" do
+        hash[:keywords].is_a?(String).should be true
+      end
+
+      it "includes a field with the site's language" do
+        hash[:lang].is_a?(String).should be true
+      end
+
+      it "includes a field with the site's encode" do
+        hash[:encode].is_a?(String).should be true
+      end
+
+      it "includes a field with the site's reply email address" do
+        hash[:reply_to].is_a?(String).should be true
+      end
+
+      it "includes a field with the site's author name or email" do
+        hash[:author].is_a?(String).should be true
+      end
+
       it "includes a field with image URIs from the site's head/body" do
         unless hash[:images].empty?
           hash[:images].is_a?(Array).should be true
