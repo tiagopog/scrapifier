@@ -41,14 +41,14 @@ module Scrapifier
 
     REPLY_TO =
       <<-END.gsub(/^\s+\|/, '')
-        |//meta[@name="reply_to"]/@content
+        |//meta[@name="reply_to"]/@content|
+        |//meta[@name="Reply_to"]/@content
       END
 
     AUTHOR =
       <<-END.gsub(/^\s+\|/, '')
         |//meta[@name="author"]/@content|
-        |//meta[@name="Author"]/@content|
-        |//meta[@name="reply_to"]/@content
+        |//meta[@name="Author"]/@content
       END
 
     IMG =
