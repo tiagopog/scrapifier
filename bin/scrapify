@@ -2,4 +2,23 @@
 
 require 'scrapifier'
 
-puts ARGV[0].scrapify
+# Usage: $ scrapify [which | images] [TEXT | URL]
+if ARGV.empty?
+    puts "      Usage:"
+    puts "      Please specify the text in which the URL will be extracted and analyzed:\n"
+    puts "          scrapifier [options] text_with_url"
+    puts "      Options:"
+    puts "          -w # which URL in the given text will be used (zero-index)"
+    puts "          -i # image types to be considered while scraping"
+    puts "      Examples:"
+    puts "          scrapify http://google.com"
+    puts "          scrapify -i jpg,png -w 0 'Take a looke at http://google.com and http://facebook.com'"
+else
+  target  = ARGV.pop
+  options = ARGV.join(' ')
+
+  which  = options.scan(/-[w]\s?(\d+)/).flatten.first    || 0
+  images = options.scan(/-[i]\s?([\w,]+)/).flatten.first || ''
+
+  puts target.scrapify(which: which, images: images)
+end
