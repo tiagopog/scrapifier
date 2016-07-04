@@ -6,21 +6,17 @@ describe String do
   let(:images)  { sf_samples[:images] }
   let(:misc)    { sf_samples[:misc]   }
   let(:regexes) { sf_samples[:regexes] }
-  
-  # 
-  # String#scrapify
-  # 
 
   describe '#scrapify' do
     context 'when no URI is matched in the String' do
       subject { 'String without any URI.'.scrapify }
-      
+
       it { should eq({}) }
     end
 
     context 'when the website was not found' do
       subject { 'Check out this http://someweirduri.com.br'.scrapify }
-      
+
       it { should eq({}) }
     end
 
@@ -28,7 +24,7 @@ describe String do
       let(:jpg) { images[:jpg][0] }
       let(:png) { images[:png][0] }
       let(:gif) { images[:gif][0] }
-      
+
       it 'sets the same value for :title, :description and :uri keys' do
         "Say my name: #{jpg}".scrapify.should include(title: jpg, description: jpg, uri: jpg)
       end
@@ -36,7 +32,7 @@ describe String do
       it 'allows all the standard image extensions by default (even GIFs)' do
         "Smile GIF! Oh, wait... #{gif}".scrapify.should include(title: gif, description: gif, uri: gif)
       end
-      
+
       it 'returns an empty Hash if the extension is not allowed' do
         "PNG is awesome! #{png}".scrapify(images: [:jpg]).should eq({})
       end
@@ -44,7 +40,7 @@ describe String do
 
     context 'when a website URI is matched in the String and a Hash is returned' do
       subject(:hash) { "Look this awesome site #{misc[:http]}".scrapify }
-      
+
       it "includes a field with the site's title" do
         hash[:title].is_a?(String).should be true
         hash[:title].empty?.should be false
@@ -88,7 +84,7 @@ describe String do
         end
       end
     end
-    
+
     it "includes a field with only the allowed types of image URIs from the site's head/body" do
       image = misc[:http].scrapify(images: :png)[:images].sample
       image.should match(regexes[:image][:png]) unless image.nil?
@@ -104,10 +100,6 @@ describe String do
       hash[:images].sample.should match(regexes[:image][:png])
     end
   end
-
-  # 
-  # String#find_uri
-  # 
 
   describe '#find_uri' do
     let(:sample_uris) { misc.map { |u| u[1] } }
@@ -136,10 +128,6 @@ describe String do
     end 
   end
 
-  # 
-  # String#sf_check_img_ext
-  # 
-
   describe '#sf_check_img_ext' do
     let(:img)  { images[:jpg].sample }
     let(:imgs) { images.map { |i| i[1] }.flatten }
@@ -152,7 +140,7 @@ describe String do
         gif:   ''.send(:sf_check_img_ext, imgs, 'gif')
       }
     end
-    
+
     context 'when no arument is passed' do
       it { expect { ''.send(:sf_check_img_ext) }.to raise_error(ArgumentError) }
     end
@@ -161,11 +149,11 @@ describe String do
       it 'allows a String as argument' do
         checked[:str].should have(1).item
       end
-      
+
       it 'allows an Array as argument' do
         checked[:jpg].should have(3).item
       end
-      
+
       it 'allows all the image extensions by default' do
         checked[:array].should have(9).item
       end
@@ -183,7 +171,7 @@ describe String do
       it 'allows an Array as the second argument' do
         checked[:jpg].should have(3).item
       end
-      
+
       it 'returns an Array with only image types allowed' do
         [:jpg, :png, :gif].each { |ext| checked[ext].should have(3).item }
       end
@@ -198,11 +186,6 @@ describe String do
       checked.each { |c| c[1].is_a?(Array).should be true }
     end
   end
-
-
-  # 
-  # String#sf_regex
-  # 
 
   describe '#sf_regex' do
     context 'when it needs a regex to match any kind of URI' do
@@ -219,23 +202,19 @@ describe String do
       [:jpg, :png, :gif].each do |ext|
         it { should match(sf_samples[:images][ext].sample) }  
       end
-    end    
+    end
   end
-
-  # 
-  # String#sf_img_regex
-  # 
 
   describe '#sf_img_regex' do
     let(:img_regexes) { regexes[:image] }
-        
+
     context 'when no argument is passed' do
       subject(:regex) { ''.send(:sf_img_regex) }
-      
+
       it 'returns a regex that matches all image extensions' do
         regex.should eq(img_regexes[:all])
       end
-      
+
       it 'matches all image extensions' do
         [:jpg, :png, :gif].each { |ext| images[ext].sample.should match(regex) }
       end

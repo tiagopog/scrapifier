@@ -5,10 +5,10 @@ module Factories
   def sf_samples
     {
       misc: {
-        http:  'http://adtangerine.com',
+        http:  'http://g1.com.br',
         https: 'https://rubygems.org/gems/string_awesome',
         ftp:   'ftp://ftpserver.com',
-        www:   'www.twitflink.com'
+        www:   'www.g1.com.br'
       },
       images: {
         jpg: [
